@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SocietyHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen h-full"><!-- Animated Intro Screen -->
+  <div id="introScreen" class="fixed inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 z-50 flex items-center justify-center">
+   <div class="text-center"><!-- Animated Building Icon -->
+    <div class="mb-8 relative">
+     <div class="building-animation">
+      <svg class="w-32 h-32 mx-auto text-white" viewbox="0 0 100 100" fill="none"><rect class="window" x="20" y="30" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="42" y="30" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="64" y="30" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="20" y="50" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="42" y="50" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="64" y="50" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="20" y="70" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="42" y="70" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="window" x="64" y="70" width="15" height="15" fill="currentColor" opacity="0" /> <rect class="door" x="35" y="85" width="30" height="15" fill="currentColor" opacity="0" /> <path class="roof" d="M 10 30 L 50 10 L 90 30" stroke="currentColor" stroke-width="3" fill="none" opacity="0" />
+      </svg>
+     </div>
+    </div><!-- Brand Name with Animation -->
+    <h1 class="text-6xl font-bold text-white mb-4 logo-appear">🏘️ SocietyHub</h1>
+    <p class="text-2xl text-white text-opacity-90 tagline-appear">Smart Living, Better Together</p><!-- Animated Dots -->
+    <div class="flex justify-center space-x-2 mt-8 dots-appear">
+     <div class="dot w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+     <div class="dot w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+     <div class="dot w-3 h-3 bg-white rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+    </div>
+   </div>
+  </div><!-- Language & Theme Toggle -->
+  <div class="fixed top-4 right-4 z-50 flex gap-2"><button onclick="toggleTheme()" class="bg-white dark:bg-gray-800 shadow-lg rounded-full p-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-200"> <span id="themeIcon">🌙</span> </button> <button onclick="toggleLanguage()" class="bg-white dark:bg-gray-800 shadow-lg rounded-full px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-200"> <span id="langToggle">हिंदी</span> </button>
+  </div><!-- Notification Area -->
+  <div id="notifications" class="fixed top-4 left-4 z-40 space-y-2"></div><!-- Header -->
+  <div class="bg-white dark:bg-gray-800 shadow-lg">
+   <div class="max-w-6xl mx-auto px-4 py-4">
+    <div class="flex justify-between items-center">
+     <div class="text-sm text-gray-600 dark:text-gray-400" data-en="🏘️ SocietyHub" data-hi="🏘️ सोसाइटी हब">
+      🏘️ SocietyHub
+     </div>
+     <h1 id="apartmentNameHeader" class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"></h1>
+     <div id="currentUserInfo" class="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
+      <div id="userAvatarHeader" class="text-2xl"></div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Login/Registration Section -->
+  <div id="authSection" class="max-w-4xl mx-auto mt-8 px-4 hidden">
+   <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><!-- Join with Invitation Code -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border-t-4 border-green-600">
+     <div class="text-center mb-6">
+      <div class="text-5xl mb-4">
+       🎟️
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2" data-en="Join Your Society" data-hi="अपने सोसाइटी में शामिल हों">Join Your Society</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-sm" data-en="Have an invitation code? Join now!" data-hi="निमंत्रण कोड है? अभी शामिल हों!">Have an invitation code? Join now!</p>
+     </div>
+     <div class="space-y-4"><input type="text" id="joinInviteCode" placeholder="Invitation Code" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Invitation Code" data-placeholder-hi="निमंत्रण कोड"> <input type="text" id="joinName" placeholder="Your Name" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Your Name" data-placeholder-hi="आपका नाम"> <input type="tel" id="joinPhone" placeholder="Phone Number" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Phone Number" data-placeholder-hi="फोन नंबर"> <input type="text" id="joinFlat" placeholder="Flat/Unit Number" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Flat/Unit Number" data-placeholder-hi="फ्लैट/यूनिट नंबर"> <input type="email" id="joinEmail" placeholder="Email (Optional)" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Email (Optional)" data-placeholder-hi="ईमेल (वैकल्पिक)"> <input type="number" id="joinMembers" placeholder="Number of Family Members" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Number of Family Members" data-placeholder-hi="परिवार के सदस्यों की संख्या"> <button onclick="showAvatarSelection('join')" class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"> <span data-en="Join Society" data-hi="सोसाइटी में शामिल हों">Join Society</span> </button>
+     </div>
+    </div><!-- Register New Apartment / Login -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border-t-4 border-blue-600">
+     <div class="text-center mb-6">
+      <div class="text-5xl mb-4">
+       🏢
+      </div>
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2" data-en="For Secretaries" data-hi="सचिवों के लिए">For Secretaries</h2>
+      <p class="text-gray-600 dark:text-gray-400 text-sm" data-en="Register or Login" data-hi="पंजीकरण या लॉगिन">Register or Login</p>
+     </div>
+     <div class="space-y-4"><button onclick="showSecretaryRegistration()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center space-x-2"> <span class="text-2xl">🏢</span> <span data-en="Register New Apartment" data-hi="नया अपार्टमेंट पंजीकृत करें">Register New Apartment</span> </button> <button onclick="showLoginForm()" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center space-x-2"> <span class="text-2xl">🔑</span> <span data-en="Login" data-hi="लॉगिन करें">Login</span> </button>
+     </div>
+    </div>
+   </div>
+  </div><!-- Avatar Selection Modal -->
+  <div id="avatarModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+   <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center" data-en="Choose Your Avatar" data-hi="अपना अवतार चुनें">Choose Your Avatar</h2>
+    <div class="grid grid-cols-4 gap-4 mb-6">
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👨‍💼')">
+      👨‍💼
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👩‍💼')">
+      👩‍💼
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👨‍🦱')">
+      👨‍🦱
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👩‍🦱')">
+      👩‍🦱
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👨‍🦰')">
+      👨‍🦰
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👩‍🦰')">
+      👩‍🦰
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👨‍🦳')">
+      👨‍🦳
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👩‍🦳')">
+      👩‍🦳
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('🧑‍🎓')">
+      🧑‍🎓
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👨‍🏫')">
+      👨‍🏫
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👩‍🏫')">
+      👩‍🏫
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('🧑‍💻')">
+      🧑‍💻
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👨‍⚕️')">
+      👨‍⚕️
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👩‍⚕️')">
+      👩‍⚕️
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👨‍🔧')">
+      👨‍🔧
+     </div>
+     <div class="avatar-option text-6xl text-center p-4 bg-gray-100 dark:bg-gray-700 rounded-lg" onclick="selectAvatar('👩‍🔧')">
+      👩‍🔧
+     </div>
+    </div><button onclick="confirmAvatar()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Continue" data-hi="जारी रखें">Continue</button>
+   </div>
+  </div><!-- Login Form -->
+  <div id="loginForm" class="max-w-md mx-auto mt-8 px-4 hidden">
+   <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8">
+    <div class="text-center mb-6">
+     <div class="text-4xl mb-3">
+      🔑
+     </div>
+     <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2" data-en="Login to SocietyHub" data-hi="सोसाइटी हब में लॉगिन करें">Login to SocietyHub</h2>
+     <p class="text-gray-600 dark:text-gray-400 text-sm" data-en="Enter your registered phone number" data-hi="अपना पंजीकृत फोन नंबर दर्ज करें">Enter your registered phone number</p>
+    </div>
+    <div class="space-y-4"><input type="tel" id="loginPhone" placeholder="Phone Number" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Phone Number" data-placeholder-hi="फोन नंबर"> <button onclick="loginUser()" class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"> <span data-en="Login" data-hi="लॉगिन करें">Login</span> </button> <button onclick="showAuthSection()" class="w-full bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition duration-200" data-en="Back" data-hi="वापस">Back</button>
+    </div>
+   </div>
+  </div><!-- Secretary Registration -->
+  <div id="secretaryRegistration" class="max-w-md mx-auto mt-8 px-4 hidden">
+   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4" data-en="🏢 Register Your Apartment" data-hi="🏢 अपना अपार्टमेंट पंजीकृत करें">🏢 Register Your Apartment</h2>
+    <div class="space-y-4"><input type="text" id="secretaryName" placeholder="Secretary Name" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Secretary Name" data-placeholder-hi="सचिव का नाम"> <input type="text" id="apartmentName" placeholder="Apartment Name (e.g., Riddhi Siddhi Apartment)" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Apartment Name (e.g., Riddhi Siddhi Apartment)" data-placeholder-hi="अपार्टमेंट का नाम (जैसे, ऋद्धि सिद्धि अपार्टमेंट)"> <input type="tel" id="secretaryPhone" placeholder="Secretary Phone Number" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Secretary Phone Number" data-placeholder-hi="सचिव का फोन नंबर"> <input type="email" id="secretaryEmail" placeholder="Secretary Email (Optional)" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Secretary Email (Optional)" data-placeholder-hi="सचिव का ईमेल (वैकल्पिक)"> <input type="number" id="defaultMaintenance" placeholder="Default Monthly Maintenance Amount" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Default Monthly Maintenance Amount" data-placeholder-hi="डिफ़ॉल्ट मासिक रखरखाव राशि"> <button onclick="showAvatarSelection('secretary')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Register Apartment" data-hi="अपार्टमेंट पंजीकृत करें">Register Apartment</button> <button onclick="showAuthSection()" class="w-full bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition duration-200" data-en="Back" data-hi="वापस">Back</button>
+    </div>
+   </div>
+  </div><!-- Main Dashboard -->
+  <div id="mainDashboard" class="max-w-6xl mx-auto px-4 py-4 hidden"><!-- Navigation -->
+   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-6">
+    <div class="flex flex-wrap gap-2 justify-center"><button onclick="showSection('dashboard')" class="nav-btn bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200" data-en="Dashboard" data-hi="डैशबोर्ड">Dashboard</button> <button onclick="showSection('residents')" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200" data-en="Residents" data-hi="निवासी">Residents</button> <button onclick="showSection('maintenance')" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200" data-en="Maintenance" data-hi="रखरखाव">Maintenance</button> <button onclick="showSection('expenses')" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200" data-en="Expenses" data-hi="खर्च">Expenses</button> <button onclick="showSection('payment')" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200" data-en="Payment" data-hi="भुगतान">Payment</button> <button onclick="showSection('analytics')" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200" data-en="Analytics" data-hi="विश्लेषण">Analytics</button> <button onclick="showSection('chat')" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200" data-en="Chat" data-hi="चैट">Chat</button> <button onclick="showSection('announcements')" id="announcementsTab" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200" data-en="Announcements" data-hi="घोषणाएं">Announcements</button> <button onclick="showSection('invitations')" id="invitationsTab" class="nav-btn bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-200 hidden" data-en="Invitations" data-hi="निमंत्रण">Invitations</button> <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition duration-200" data-en="Logout" data-hi="लॉगआउट">Logout</button>
+    </div>
+   </div><!-- Dashboard Section -->
+   <div id="dashboard" class="section fade-in">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2" data-en="👥 Total Residents" data-hi="👥 कुल निवासी">👥 Total Residents</h3>
+      <p id="totalResidents" class="text-3xl font-bold text-blue-600">0</p>
+     </div>
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2" data-en="💵 Maintenance Collected" data-hi="💵 रखरखाव संग्रह">💵 Maintenance Collected</h3>
+      <p id="maintenanceCollected" class="text-3xl font-bold text-green-600">₹0</p>
+     </div>
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2" data-en="🔧 Total Expenses" data-hi="🔧 कुल खर्च">🔧 Total Expenses</h3>
+      <p id="totalExpenses" class="text-3xl font-bold text-red-600">₹0</p>
+     </div>
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2" data-en="💰 Available Balance" data-hi="💰 उपलब्ध शेष">💰 Available Balance</h3>
+      <p id="availableBalance" class="text-3xl font-bold text-purple-600">₹0</p>
+     </div>
+    </div>
+   </div><!-- Residents Section -->
+   <div id="residents" class="section hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="👥 All Residents" data-hi="👥 सभी निवासी">👥 All Residents</h2>
+     <div class="overflow-x-auto">
+      <table class="w-full table-auto">
+       <thead>
+        <tr class="bg-gray-50 dark:bg-gray-700">
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Avatar" data-hi="अवतार">Avatar</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Name" data-hi="नाम">Name</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Flat" data-hi="फ्लैट">Flat</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Members" data-hi="सदस्य">Members</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Phone" data-hi="फोन">Phone</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Email" data-hi="ईमेल">Email</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Role" data-hi="भूमिका">Role</th>
+        </tr>
+       </thead>
+       <tbody id="residentsTable"><!-- Residents will be added here -->
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div><!-- Maintenance Section -->
+   <div id="maintenance" class="section hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"><!-- Record Payment -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="💰 Record Maintenance Payment" data-hi="💰 रखरखाव भुगतान रिकॉर्ड करें">💰 Record Maintenance Payment</h2>
+      <div class="space-y-4"><select id="paymentResident" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"> <option value="" data-en="Select Resident" data-hi="निवासी चुनें">Select Resident</option> </select> <input type="number" id="paymentAmount" placeholder="Amount Paid" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Amount Paid" data-placeholder-hi="भुगतान की गई राशि"> <input type="text" id="paymentReference" placeholder="Payment Reference/Note" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Payment Reference/Note" data-placeholder-hi="भुगतान संदर्भ/नोट"> <button onclick="recordMaintenancePayment()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Record Payment" data-hi="भुगतान रिकॉर्ड करें">Record Payment</button>
+      </div>
+     </div><!-- Resident Contributions -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="🤝 Resident Contributions" data-hi="🤝 निवासी योगदान">🤝 Resident Contributions</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4" data-en="Record when a resident spends money for society (will be deducted from future maintenance)" data-hi="जब कोई निवासी सोसाइटी के लिए पैसे खर्च करता है तो रिकॉर्ड करें (भविष्य के रखरखाव से काटा जाएगा)">Record when a resident spends money for society (will be deducted from future maintenance)</p>
+      <div class="space-y-4"><select id="contributionResident" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="" data-en="Select Resident" data-hi="निवासी चुनें">Select Resident</option> </select> <input type="number" id="contributionAmount" placeholder="Amount Spent" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Amount Spent" data-placeholder-hi="खर्च की गई राशि"> <textarea id="contributionDetails" placeholder="What was purchased/paid for?" rows="2" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="What was purchased/paid for?" data-placeholder-hi="क्या खरीदा/भुगतान किया गया था?"></textarea> <button onclick="recordContribution()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Record Contribution" data-hi="योगदान रिकॉर्ड करें">Record Contribution</button>
+      </div>
+     </div>
+    </div><!-- Maintenance Status Table -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📋 Maintenance Status" data-hi="📋 रखरखाव स्थिति">📋 Maintenance Status</h2>
+     <div class="overflow-x-auto">
+      <table class="w-full table-auto">
+       <thead>
+        <tr class="bg-gray-50 dark:bg-gray-700">
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Resident" data-hi="निवासी">Resident</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Flat" data-hi="फ्लैट">Flat</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Monthly Due" data-hi="मासिक देय">Monthly Due</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Paid" data-hi="भुगतान">Paid</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Contribution" data-hi="योगदान">Contribution</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Extra Share" data-hi="अतिरिक्त हिस्सा">Extra Share</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Extra Paid" data-hi="अतिरिक्त भुगतान">Extra Paid</th>
+         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200" data-en="Status" data-hi="स्थिति">Status</th>
+        </tr>
+       </thead>
+       <tbody id="maintenanceStatusTable"><!-- Maintenance status rows will be added here -->
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div><!-- Expenses Section -->
+   <div id="expenses" class="section hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"><!-- Add Extra Expense -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="🔧 Add Extra Expense" data-hi="🔧 अतिरिक्त खर्च जोड़ें">🔧 Add Extra Expense</h2>
+      <div class="space-y-4"><input type="text" id="expenseDescription" placeholder="Expense Description" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" data-placeholder-en="Expense Description" data-placeholder-hi="खर्च का विवरण"> <input type="number" id="expenseAmount" placeholder="Total Amount" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" data-placeholder-en="Total Amount" data-placeholder-hi="कुल राशि"> <textarea id="expenseDetails" placeholder="Additional Details" rows="3" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" data-placeholder-en="Additional Details" data-placeholder-hi="अतिरिक्त विवरण"></textarea> <button onclick="addExpense()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Add Expense &amp; Notify All" data-hi="खर्च जोड़ें और सभी को सूचित करें">Add Expense &amp; Notify All</button>
+      </div>
+     </div><!-- Expense Summary -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📊 Expense Summary" data-hi="📊 खर्च सारांश">📊 Expense Summary</h2>
+      <div id="expenseSummary" class="space-y-3">
+       <div class="text-center text-gray-500" data-en="No expenses recorded yet" data-hi="अभी तक कोई खर्च दर्ज नहीं किया गया">
+        No expenses recorded yet
+       </div>
+      </div>
+     </div>
+    </div><!-- Expenses List -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="🔧 All Extra Expenses" data-hi="🔧 सभी अतिरिक्त खर्च">🔧 All Extra Expenses</h2>
+     <div id="expensesList" class="space-y-3"><!-- Expenses will be added here -->
+     </div>
+    </div>
+   </div><!-- Payment Gateway Section -->
+   <div id="payment" class="section hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><!-- Payment Information (Secretary View) -->
+     <div id="paymentInfo" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hidden">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="💳 Payment Information Setup" data-hi="💳 भुगतान जानकारी सेटअप">💳 Payment Information Setup</h2>
+      <div class="space-y-4"><input type="text" id="bankName" placeholder="Bank Name" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Bank Name" data-placeholder-hi="बैंक का नाम"> <input type="text" id="accountNumber" placeholder="Account Number" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Account Number" data-placeholder-hi="खाता संख्या"> <input type="text" id="ifscCode" placeholder="IFSC Code" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="IFSC Code" data-placeholder-hi="IFSC कोड"> <input type="text" id="upiId" placeholder="UPI ID" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="UPI ID" data-placeholder-hi="UPI आईडी"> <textarea id="qrCode" placeholder="QR Code (Base64 or URL)" rows="3" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="QR Code (Base64 or URL)" data-placeholder-hi="QR कोड (Base64 या URL)"></textarea> <button onclick="savePaymentInfo()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Save Payment Info" data-hi="भुगतान जानकारी सहेजें">Save Payment Info</button>
+      </div>
+     </div><!-- Payment Display (Resident View) -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="💳 Make Payment" data-hi="💳 भुगतान करें">💳 Make Payment</h2>
+      <div id="paymentDisplay" class="space-y-4"><!-- Payment info will be displayed here -->
+      </div>
+     </div><!-- Mark Payment Complete (Resident) -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="✅ Confirm Payment" data-hi="✅ भुगतान पुष्टि करें">✅ Confirm Payment</h2>
+      <div class="space-y-4"><input type="number" id="paidAmount" placeholder="Amount Paid" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Amount Paid" data-placeholder-hi="भुगतान की गई राशि"> <input type="text" id="transactionRef" placeholder="Transaction Reference/UTR" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" data-placeholder-en="Transaction Reference/UTR" data-placeholder-hi="लेनदेन संदर्भ/UTR"> <button onclick="confirmPayment()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="I Have Made the Payment" data-hi="मैंने भुगतान कर दिया है">I Have Made the Payment</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Analytics Section -->
+   <div id="analytics" class="section hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"><!-- Bar Chart -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📊 Monthly Overview" data-hi="📊 मासिक अवलोकन">📊 Monthly Overview</h2>
+      <canvas id="barChart"></canvas>
+     </div><!-- Pie Chart -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="🥧 Expense Distribution" data-hi="🥧 खर्च वितरण">🥧 Expense Distribution</h2>
+      <canvas id="pieChart"></canvas>
+     </div>
+    </div><!-- Line Chart -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📈 Balance Trend" data-hi="📈 शेष रुझान">📈 Balance Trend</h2>
+     <canvas id="lineChart"></canvas>
+    </div>
+   </div><!-- Chat Section -->
+   <div id="chat" class="section hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"><!-- Chat Users List -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="💬 Residents" data-hi="💬 निवासी">💬 Residents</h2>
+      <div id="chatUsersList" class="space-y-2"><!-- Chat users will be listed here -->
+      </div>
+     </div><!-- Chat Window -->
+     <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" id="chatWithUser" data-en="Select a resident to chat" data-hi="चैट करने के लिए एक निवासी चुनें">Select a resident to chat</h2>
+      <div class="chat-container bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4" id="chatMessages"><!-- Chat messages will appear here -->
+      </div>
+      <div class="flex gap-2"><input type="text" id="chatInput" placeholder="Type your message..." class="flex-1 p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Type your message..." data-placeholder-hi="अपना संदेश लिखें..."> <button onclick="sendMessage()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition duration-200" data-en="Send" data-hi="भेजें">Send</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Announcements Section -->
+   <div id="announcements" class="section hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"><!-- Create Announcement (Secretary Only) -->
+     <div id="createAnnouncement" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hidden">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📢 Create Announcement" data-hi="📢 घोषणा बनाएं">📢 Create Announcement</h2>
+      <div class="space-y-4"><input type="text" id="announcementTitle" placeholder="Announcement Title" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Announcement Title" data-placeholder-hi="घोषणा शीर्षक"> <textarea id="announcementMessage" placeholder="Announcement Message" rows="4" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" data-placeholder-en="Announcement Message" data-placeholder-hi="घोषणा संदेश"></textarea> <select id="announcementPriority" class="w-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <option value="normal" data-en="Normal Priority" data-hi="सामान्य प्राथमिकता">Normal Priority</option> <option value="important" data-en="Important" data-hi="महत्वपूर्ण">Important</option> <option value="urgent" data-en="Urgent" data-hi="अत्यावश्यक">Urgent</option> </select> <button onclick="createAnnouncement()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Post Announcement" data-hi="घोषणा पोस्ट करें">Post Announcement</button>
+      </div>
+     </div><!-- Latest Announcement -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📌 Latest Announcement" data-hi="📌 नवीनतम घोषणा">📌 Latest Announcement</h2>
+      <div id="latestAnnouncement" class="text-gray-500 dark:text-gray-400 text-center"><span data-en="No announcements yet" data-hi="अभी तक कोई घोषणा नहीं">No announcements yet</span>
+      </div>
+     </div>
+    </div><!-- All Announcements -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+     <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📢 All Announcements" data-hi="📢 सभी घोषणाएं">📢 All Announcements</h2>
+     <div id="announcementsList" class="space-y-3"><!-- Announcements will be listed here -->
+     </div>
+    </div>
+   </div><!-- Invitations Section (Secretary Only) -->
+   <div id="invitations" class="section hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><!-- Generate Invitation -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📧 Generate Invitation" data-hi="📧 निमंत्रण बनाएं">📧 Generate Invitation</h2>
+      <div class="space-y-4"><button onclick="generateInviteCode()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200" data-en="Generate New Invite Code" data-hi="नया निमंत्रण कोड बनाएं">Generate New Invite Code</button>
+       <div id="inviteCodeDisplay" class="hidden">
+        <div class="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+         <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2" data-en="Share this code with new residents:" data-hi="इस कोड को नए निवासियों के साथ साझा करें:">Share this code with new residents:</h3>
+         <div class="bg-white dark:bg-gray-800 p-3 rounded border text-center"><span id="generatedInviteCode" class="text-2xl font-bold text-blue-600">DEMO</span>
+         </div><button onclick="copyInviteCode()" class="w-full mt-3 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition duration-200" data-en="Copy Code" data-hi="कोड कॉपी करें">Copy Code</button>
+        </div>
+       </div>
+      </div>
+     </div><!-- Active Invitations -->
+     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4" data-en="📋 Active Invitations" data-hi="📋 सक्रिय निमंत्रण">📋 Active Invitations</h2>
+      <div id="activeInvitations" class="space-y-3"><!-- Active invitations will be shown here -->
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script src="script.js"></script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6a2d19b4866eef',t:'MTc2NzE4ODI5NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
